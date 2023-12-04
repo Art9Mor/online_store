@@ -24,11 +24,11 @@ class Category(models.Model):
 
 
 class Product(models.Model):
-    name = models.CharField(max_length=50, verbose_name='наименование')
-    description = models.TextField(verbose_name='описание')
+    name = models.CharField(max_length=50, verbose_name='Наименование')
+    description = models.TextField(verbose_name='Описание')
     img = models.ImageField(upload_to='product/', verbose_name='Изображение', **NULLABLE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name='Категория')
-    cost = models.DecimalField(verbose_name='цена')
+    cost = models.IntegerField(verbose_name='Цена')
     first_date = models.DateTimeField(verbose_name='Дата создания', **NULLABLE)
     last_date = models.DateTimeField(verbose_name='Дата изменения', **NULLABLE)
 
