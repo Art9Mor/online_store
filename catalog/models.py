@@ -12,7 +12,7 @@ class Category(models.Model):
     description = models.TextField(verbose_name='Описание', **NULLABLE)
 
     def __str__(self):
-        return f'{self.id}; {self.category_name}'
+        return f'{self.category_name}'
 
     class Meta:
         verbose_name = 'Категория'
@@ -35,9 +35,10 @@ class Product(models.Model):
     first_date = models.DateTimeField(verbose_name='Дата создания', **NULLABLE)
     last_date = models.DateTimeField(verbose_name='Дата изменения', **NULLABLE)
     is_active = models.BooleanField(default=True, verbose_name='В наличии')
+    can_be_ordered = models.BooleanField(default=True, verbose_name='Можно заказать')
 
     def __str__(self):
-        return f'{self.id}; {self.name}: {self.cost}, {self.category}'
+        return f'{self.name} | {self.category} | {self.cost} руб.'
 
     class Meta:
         verbose_name = 'товар'
