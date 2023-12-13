@@ -27,7 +27,7 @@ def password(request):
 def index(request):
     context = {
         'object_list': Product.objects.all()[:3],
-        'title': 'O.S.Ky: Главная'
+        'title': 'Главная'
     }
     return render(request, 'catalog/index.html', context)
 
@@ -36,24 +36,44 @@ def products_list(request):
     prod_list = Product.objects.all()
     context = {
         'object_list': prod_list,
-        'title': 'O.S.Ky: Товары'
+        'title': 'Все товары'
     }
 
     return render(request, 'catalog/products_list.html', context)
-
-
-def product_card(request):
-    prod_card = Product.objects.all()
-    context = {'object_list': prod_card}
-
-    return render(request, 'catalog/product_card.html', context)
 
 
 def categories(request):
     categories_list = Category.objects.all()
     context = {
         'object_list': categories_list,
-        'title': 'O.S.Ky: Категории'
+        'title': 'Категории'
     }
 
     return render(request, 'catalog/categories.html', context)
+
+
+def product_card(request, pk):
+    category_item = Category.objects.get(pk=pk)
+    context = {
+        'object_list': Product.objects.filter(category_id=pk),
+        'title': f'Товары категории {category_item.category_name}'
+    }
+
+    return render(request, 'catalog/product_card.html', context)
+
+
+# def products_category(request, pk):
+#     category_item = Product.objects.get(pk=pk)
+#     context = {
+#         'object_list': Category.objects.filter(product_id=pk),
+#         'title': ''
+#     }
+
+def product_detail(request, pk):
+    product_item = Product.objects.get(pk=pk)
+    context = {
+        'object_list': Product.objects.filter(product_id=pk),
+        'title': f'Товар {product_item.name}'
+    }
+
+    return render(request, 'catalog/product_detail.html', context)
