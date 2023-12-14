@@ -1,6 +1,11 @@
-from django.shortcuts import render
-
+from django.shortcuts import render, get_object_or_404
+from django.views.generic import ListView, DetailView
 from catalog.models import Product, Category
+
+
+class ProductListView(ListView):
+    model = Product
+    template_name = 'catalog/products_list.html'
 
 
 def contacts(request):
@@ -32,16 +37,6 @@ def index(request):
     return render(request, 'catalog/index.html', context)
 
 
-def products_list(request):
-    prod_list = Product.objects.all()
-    context = {
-        'object_list': prod_list,
-        'title': 'Все товары'
-    }
-
-    return render(request, 'catalog/products_list.html', context)
-
-
 def categories(request):
     categories_list = Category.objects.all()
     context = {
@@ -62,18 +57,6 @@ def product_card(request, pk):
     return render(request, 'catalog/product_card.html', context)
 
 
-# def products_category(request, pk):
-#     category_item = Product.objects.get(pk=pk)
-#     context = {
-#         'object_list': Category.objects.filter(product_id=pk),
-#         'title': ''
-#     }
-
-def product_detail(request, pk):
-    product_item = Product.objects.get(pk=pk)
-    context = {
-        'object_list': Product.objects.filter(product_id=pk),
-        'title': f'Товар {product_item.name}'
-    }
-
-    return render(request, 'catalog/product_detail.html', context)
+class ProductDetailView(DetailView):
+    model = Product
+    template_name = 'catalog/product_detail.html'
