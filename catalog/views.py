@@ -6,6 +6,9 @@ from catalog.models import Product, Category
 class ProductListView(ListView):
     model = Product
     template_name = 'catalog/products_list.html'
+    extra_context = {
+        'title': 'Все товары'
+    }
 
 
 def contacts(request):
@@ -60,3 +63,4 @@ def product_card(request, pk):
 class ProductDetailView(DetailView):
     model = Product
     template_name = 'catalog/product_detail.html'
+
