@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from catalog.models import Product, Category, Review
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
+from pytils.translit import slugify
 
 
 class ProductListView(ListView):
@@ -79,22 +80,45 @@ class ReviewListView(ListView):
 
 class ReviewCreateView(CreateView):
     model = Review
-    fields = ('title', 'slug', 'text', 'photo', 'is_published')
+    fields = ('title', 'text', 'photo', 'is_published')
     success_url = reverse_lazy('catalog:reviews')
     extra_context = {
         'title': 'Написать отзыв'
     }
 
+    def form_valid(self, form):
+        if form.is_valid():
+            new_review = form.save()
+            new_review.slug = slugify(new_review.title)
+            new_review.save()
+        return super().form_valid(form)
+
 
 class ReviewUpdateView(UpdateView):
     model = Review
     fields = ('title', 'slug', 'text', 'photo')
-    success_url = reverse_lazy('catalog:reviews')
+    # success_url = reverse_lazy('catalog:reviews')
+
+    def form_valid(self, form):
+        if form.is_valid():
+            new_review = form.save()
+            new_review.slug = slugify(new_review.title)
+            new_review.save()
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('catalog:review_detail', args=[self.kwargs.get('pk')])
 
 
 class ReviewDetailView(DetailView):
     model = Review
     template_name = 'catalog/review_detail.html'
+
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        self.object.views_count += 1
+        self.object.save()
+        return self.object
 
 
 class ReviewDeleteView(DeleteView):

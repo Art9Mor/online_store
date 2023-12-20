@@ -6,7 +6,7 @@
             <div class="col-lg-6 col-md-8 mx-auto">
                 <h1 class="fw-light">{{ title }}</h1>
                 <p class="lead text-body-secondary">
-                    Здесь Вы можете оставить/прочесть отзыв о сотрудничестве с нами или о нашем товаре.
+                    Здесь Вы можете оставить/прочесть отзывы о сотрудничестве с нами или о нашем товаре.
                 </p>
                 <a type="button" class="btn btn-success"
                    href="{% url 'catalog:create_review' %}">Написать отзыв</a>
@@ -21,14 +21,14 @@
                     <div class="col">
                         <div class="card shadow-sm" style="width: 18rem;">
                             <div class="card-body">
-                                <p class="card-text">{{ object|title }}</p>
+                                <p class="card-text">{{ object|title }}({{ object.slug }})</p>
                                 <p class="card-text">{{ object.text|truncatechars:100 }}</p>
-                                <p class="card-text">{{ object.creation_date }}|{{ object.views_count }}</p>
+                                <p class="card-text">{{ object.creation_date }}  Просмотры: {{ object.views_count }}</p>
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <div class="btn-group">
+                                    <div class="container">
                                         <a type="button" class="btn btn-sm btn-outline-secondary"
                                            href="{% url 'catalog:review_detail' object.pk %}">Читать отзыв</a>
-                                        <a type="button" class="btn btn-sm btn-outline-secondary"
+                                        <a type="button" class="btn btn-sm btn-outline-danger"
                                            href="{% url 'catalog:delete_review' object.pk %}">Удалить</a>
                                     </div>
                                 </div>

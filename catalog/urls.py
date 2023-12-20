@@ -2,7 +2,7 @@ from django.urls import path
 
 from catalog.apps import MainConfig
 from catalog.views import index, contacts, password, product_card, ProductListView, ProductDetailView, \
-    CategoryListView, ReviewListView, ReviewCreateView, ReviewDetailView, ReviewUpdateView, ReviewDeleteView
+     CategoryListView, ReviewListView, ReviewCreateView, ReviewDetailView, ReviewUpdateView, ReviewDeleteView
 
 app_name = MainConfig.name
 
