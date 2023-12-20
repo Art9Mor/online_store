@@ -1,21 +1,25 @@
 {% extends 'catalog/base.html' %}
 {% load my_tags %}
 {% block content %}
+    <section class="py-5 text-center container">
+        <div class="row py-lg-5">
+            <div class="col-lg-6 col-md-8 mx-auto">
+                <h1 class="fw-light">{{ object.name }}</h1>
+            </div>
+        </div>
+    </section>
     <div class="container">
         <div class="row g-0 bg-body-secondary position-relative">
             <div class="col-md-6 mb-md-0 p-md-4">
                 <img src="{{ object.img|mymedia }}" class="w-100" alt="...">
             </div>
             <div class="col-md-6 p-4 ps-md-0">
-                <h5 class="mt-0">{{ object.name }}</h5>
+                <h5 class="mt-0">О товаре:</h5>
+                <p>id: {{ object.id }}</p>
                 <p>Описание: {{ object.description }}</p>
                 <p>Цена: {{ object.cost }}руб.</p>
                 <p>Категория товара: {{ object.category }}</p>
-                <div class="btn-group" role="group" aria-label="Basic example">
-                    <button type="button" class="btn btn-primary">Кнопка 1</button>
-                    <button type="button" class="btn btn-primary">Кнопка 2</button>
-                    <button type="button" class="btn btn-primary">Кнопка 3</button>
-                </div>
+                <button type="button" class="btn btn-danger">Купить</button>
             </div>
         </div>
     </div>

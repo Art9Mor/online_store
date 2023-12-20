@@ -1,6 +1,7 @@
-from django.shortcuts import render, get_object_or_404
-from django.views.generic import ListView, DetailView
-from catalog.models import Product, Category
+from django.shortcuts import render
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from catalog.models import Product, Category, Review
+from django.urls import reverse_lazy
 
 
 class ProductListView(ListView):
@@ -40,14 +41,12 @@ def index(request):
     return render(request, 'catalog/index.html', context)
 
 
-def categories(request):
-    categories_list = Category.objects.all()
-    context = {
-        'object_list': categories_list,
+class CategoryListView(ListView):
+    model = Category
+    template_name = 'catalog/categories.html'
+    extra_context = {
         'title': 'Категории'
     }
-
-    return render(request, 'catalog/categories.html', context)
 
 
 def product_card(request, pk):
@@ -64,3 +63,40 @@ class ProductDetailView(DetailView):
     model = Product
     template_name = 'catalog/product_detail.html'
 
+
+class ReviewListView(ListView):
+    model = Review
+    template_name = 'catalog/review_list.html'
+    extra_context = {
+        'title': 'Все отзывы'
+    }
+
+    def get_queryset(self, *args, **kwargs):
+        queryset = super().get_queryset(*args, **kwargs)
+        queryset = queryset.filter(is_published=True)
+        return queryset
+
+
+class ReviewCreateView(CreateView):
+    model = Review
+    fields = ('title', 'slug', 'text', 'photo', 'is_published')
+    success_url = reverse_lazy('catalog:reviews')
+    extra_context = {
+        'title': 'Написать отзыв'
+    }
+
+
+class ReviewUpdateView(UpdateView):
+    model = Review
+    fields = ('title', 'slug', 'text', 'photo')
+    success_url = reverse_lazy('catalog:reviews')
+
+
+class ReviewDetailView(DetailView):
+    model = Review
+    template_name = 'catalog/review_detail.html'
+
+
+class ReviewDeleteView(DeleteView):
+    model = Review
+    success_url = reverse_lazy('catalog:reviews')

@@ -52,8 +52,8 @@
                                 <div class="card-body">
                                     <h5 class="card-title">{{ object.name }}</h5>
                                     <p class="card-text">{{ object.description|truncatechars:100 }}</p>
-                                    <a href="{% url 'catalog:product_detail' object.pk %}" class="btn btn-primary">К товару</a>
-                                    <a href="#" class="btn btn-primary">В категорию</a>
+                                    <a href="{% url 'catalog:product_detail' object.pk %}" class="btn btn-primary">К
+                                        товару</a>
                                 </div>
                             {% endfor %}
                         </div>
@@ -84,6 +84,9 @@
                     <div class="col-6 col-md">
                         <h5>О нас</h5>
                         <p>
+
+                            <a class="p-2 btn btn-primary" href="{% url 'catalog:reviews' %}">Отзывы</a>
+
                             <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#collapseWidthExample" aria-expanded="false"
                                     aria-controls="collapseWidthExample">
@@ -99,6 +102,7 @@
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </footer>
