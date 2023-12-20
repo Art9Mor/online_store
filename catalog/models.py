@@ -56,7 +56,7 @@ class Review(models.Model):
     views_count = models.IntegerField(default=0, verbose_name='Просмотры')
 
     def __str__(self):
-        return f'Отзыв {self.title} | {self.views_count}'
+        return f'Отзыв {self.title}'
 
     class Meta:
         verbose_name = 'Отзыв'
