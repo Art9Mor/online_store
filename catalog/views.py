@@ -97,7 +97,6 @@ class ReviewCreateView(CreateView):
 class ReviewUpdateView(UpdateView):
     model = Review
     fields = ('title', 'slug', 'text', 'photo')
-    # success_url = reverse_lazy('catalog:reviews')
 
     def form_valid(self, form):
         if form.is_valid():
