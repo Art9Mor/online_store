@@ -20,6 +20,7 @@
                 <p>Цена: {{ object.cost }}руб.</p>
                 <p>Категория товара: {{ object.category }}</p>
                 <button type="button" class="btn btn-danger">Купить</button>
+                <button type="button" class="btn btn-warning" href="{% url 'catalo:product_update' %}">Изменить</button>
             </div>
         </div>
     </div>
