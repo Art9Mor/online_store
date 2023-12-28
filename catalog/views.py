@@ -152,7 +152,13 @@ class ProductUpdateView(UpdateView):
     model = Product
     form_class = ProductForm
 
+    def get_success_url(self):
+        return reverse_lazy('catalog:products_list', args=[self.object.category.pk])
+
 
 class ProductDeleteView(DeleteView):
     model = Product
     form_class = ProductForm
+
+    def get_success_url(self):
+        return reverse_lazy('catalog:products_list', args=[self.object.category.pk])
