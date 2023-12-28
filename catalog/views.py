@@ -1,16 +1,39 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from catalog.models import Product, Category, Review
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
+
+from catalog.forms import ProductForm
+from catalog.models import Product, Category, Review, Version
 from django.urls import reverse_lazy, reverse
 from pytils.translit import slugify
 
 
-class ProductListView(ListView):
-    model = Product
-    template_name = 'catalog/products_list.html'
+class IndexView(TemplateView):
+    template_name = 'catalog/index.html'
     extra_context = {
-        'title': 'Все товары'
+        'title': 'Главная',
     }
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['object_list'] = Product.objects.all()[:3]
+        return context_data
+
+
+class ProductListView(LoginRequiredMixin, ListView):
+    model = Product
+
+    def get_queryset(self):
+        queryset = super().get_queryset().all()
+        if not self.request.user.is_staff:
+            return queryset.filter(user=self.request.user, is_published=True)
+        return queryset
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['version'] = Version.objects.all()
+        context['title'] = 'Все товары'
+        return context
 
 
 def contacts(request):
@@ -32,14 +55,6 @@ def password(request):
         'title': 'O.S.Ky: Пароль'
     }
     return render(request, 'catalog/password.html', context)
-
-
-def index(request):
-    context = {
-        'object_list': Product.objects.all()[:3],
-        'title': 'Главная'
-    }
-    return render(request, 'catalog/index.html', context)
 
 
 class CategoryListView(ListView):
@@ -123,3 +138,21 @@ class ReviewDetailView(DetailView):
 class ReviewDeleteView(DeleteView):
     model = Review
     success_url = reverse_lazy('catalog:reviews')
+
+
+class ProductCreateView(CreateView):
+    model = Product
+    form_class = ProductForm
+
+    def get_success_url(self):
+        return reverse_lazy('catalog:products_list', args=[self.object.category.pk])
+
+
+class ProductUpdateView(UpdateView):
+    model = Product
+    form_class = ProductForm
+
+
+class ProductDeleteView(DeleteView):
+    model = Product
+

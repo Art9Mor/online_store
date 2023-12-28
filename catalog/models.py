@@ -1,4 +1,7 @@
+from django.conf import settings
 from django.db import models, connection
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 NULLABLE = {
     'blank': True,
@@ -32,10 +35,12 @@ class Product(models.Model):
     img = models.ImageField(upload_to='product/', verbose_name='Изображение', **NULLABLE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name='Категория')
     cost = models.IntegerField(verbose_name='Цена')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, verbose_name='user', **NULLABLE)
     first_date = models.DateTimeField(verbose_name='Дата создания', **NULLABLE)
     last_date = models.DateTimeField(verbose_name='Дата изменения', **NULLABLE)
     is_active = models.BooleanField(default=True, verbose_name='В наличии')
     can_be_ordered = models.BooleanField(default=True, verbose_name='Можно заказать')
+
 
     def __str__(self):
         return f'{self.name} | {self.category} | {self.cost} руб.'
@@ -61,3 +66,23 @@ class Review(models.Model):
     class Meta:
         verbose_name = 'Отзыв'
         verbose_name_plural = 'Отзывы'
+
+
+class Version(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Продукт')
+    number = models.IntegerField(verbose_name='Номер версии')
+    name = models.CharField(max_length=100, verbose_name='Название версии')
+    sign = models.BooleanField(default=False, verbose_name='Текущая версия')
+
+    def __str__(self):
+        return f'Продукт {self.product} версии {self.number}'
+
+    class Meta:
+        verbose_name = 'Версия'
+        verbose_name_plural = 'Версии'
+
+
+@receiver(post_save, sender=Version)
+def set_current_version(sender, instance, **kwargs):
+    if instance.current_version:
+        Version.objects.filter(product=instance.product).exclude(pk=instance.pk).update(current_version=False)
