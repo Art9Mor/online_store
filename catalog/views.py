@@ -155,4 +155,4 @@ class ProductUpdateView(UpdateView):
 
 class ProductDeleteView(DeleteView):
     model = Product
-
+    form_class = ProductForm
