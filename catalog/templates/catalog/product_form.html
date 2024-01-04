@@ -6,7 +6,11 @@
             <div class="col-6">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Товар</h3>
+                        {% if object %}
+                            <h3 class="card-title">Редактирование товара</h3>
+                        {% else %}
+                            <h3 class="card-title">Создание товара</h3>
+                        {% endif %}
                     </div>
                     <div class="card-body">
                         {% csrf_token %}

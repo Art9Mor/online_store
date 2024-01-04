@@ -20,8 +20,8 @@ urlpatterns = [
     path('review_detail/<int:pk>/', ReviewDetailView.as_view(), name='review_detail'),
     path('review_edit/<int:pk>/', ReviewUpdateView.as_view(), name='review_edit'),
     path('review_delete/<int:pk>/', ReviewDeleteView.as_view(), name='delete_review'),
-    path('prod_create/<int:pk>', ProductCreateView.as_view(), name='prod_create'),
-    path('prod_update/<int:pk>', ProductUpdateView.as_view(), name='product_update'),
-    path('prod_delete/<int:pk>', ProductDeleteView.as_view(), name='product_delete')
+    path('prod_create/', ProductCreateView.as_view(), name='prod_create'),
+    path('prod_update/<int:pk>/', ProductUpdateView.as_view(), name='product_update'),
+    path('prod_delete/<int:pk>/', ProductDeleteView.as_view(), name='product_delete')
 
 ]
