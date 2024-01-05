@@ -145,7 +145,7 @@ class ProductCreateView(CreateView):
     form_class = ProductForm
 
     def get_success_url(self):
-        return reverse_lazy('catalog:products_list', args=[self.object.category.pk])
+        return reverse_lazy('catalog:product_card', args=[self.object.category.pk])
 
 
 class ProductUpdateView(UpdateView):
@@ -153,7 +153,7 @@ class ProductUpdateView(UpdateView):
     form_class = ProductForm
 
     def get_success_url(self):
-        return reverse_lazy('catalog:products_list', args=[self.object.category.pk])
+        return reverse_lazy('catalog:product_card', args=[self.object.category.pk])
 
 
 class ProductDeleteView(DeleteView):
@@ -161,4 +161,4 @@ class ProductDeleteView(DeleteView):
     form_class = ProductForm
 
     def get_success_url(self):
-        return reverse_lazy('catalog:products_list', args=[self.object.category.pk])
+        return reverse_lazy('catalog:product_card', args=[self.object.category.pk])
