@@ -22,23 +22,17 @@
                         <div class="col-12">
                             <form method="post">
                                 {% csrf_token %}
-                                <div class="mb-lg-3">
-                                    <label for="exampleInputPassword1" class="form-label">Имя</label>
-                                    <input type="text" class="form-control" id="exampleInputPassword1" name="name">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="exampleInputEmail1" class="form-label">Email</label>
-                                    <input type="email" class="form-control" id="exampleInputEmail1"
-                                           aria-describedby="emailHelp" name="email">
-                                    <div id="emailHelp" class="form-text">Ваш email сохранит конфиденциальность.</div>
-                                </div>
                                 <a type="submit" class="p-2 btn btn-outline-primary"
                                    style="margin: auto; display: block"
-                                   href="/pass">
+                                   href="{% url 'users:login' %}">
                                     Войти
                                 </a>
                                 <br/>
-                                <input class="btn-outline-primary" type="submit" value="Зарегистрироваться"/>
+                                <a type="submit" class="p-2 btn btn-outline-primary"
+                                   style="margin: auto; display: block"
+                                   href="{% url 'users:register' %}">
+                                    Зарегистрироваться
+                                </a>
                             </form>
                         </div>
                     </div>
@@ -83,7 +77,8 @@
                                 <div class="accordion-body">
                                     <strong><code>Порядок регистрации</code></strong><br/>
                                     Если Вы ещё не зарегистрированы на нашем сайте, то впишите свои
-                                    имя и email в соответствующих полях, после чего нажмите <code>Зарегистрироваться</code>.
+                                    имя и email в соответствующих полях, после чего нажмите
+                                    <code>Зарегистрироваться</code>.
                                     В этом случае Вам на указанную почту придёт письмо для полной регистрации.
                                 </div>
                             </div>

@@ -22,7 +22,13 @@
                                 Cоздать
                             {% endif %}
                         </button>
-                        <a type="button" class="btn btn-danger" href="{% url 'catalog:prod_list' %}"> Отмена</a>
+                        {% if object %}
+                            <a type="button" class="btn btn-danger" href="{% url 'catalog:product_detail' object.pk %}">
+                                Отмена</a>
+                        {% else %}
+                            <a type="button" class="btn btn-danger" href="{% url 'catalog:products_list' %}">
+                                Отмена</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>

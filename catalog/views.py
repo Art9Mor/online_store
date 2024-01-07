@@ -22,6 +22,7 @@ class IndexView(TemplateView):
 
 class ProductListView(LoginRequiredMixin, ListView):
     model = Product
+    template_name = 'catalog/products_list.html'
 
     def get_queryset(self):
         queryset = super().get_queryset().all()
@@ -37,24 +38,10 @@ class ProductListView(LoginRequiredMixin, ListView):
 
 
 def contacts(request):
-    if request.method == 'POST':
-        name = request.POST.get('name')
-        email = request.POST.get('email')
-        print(f'{name}: {email}')
     context = {
         'title': 'O.S.Ky: Вход/Регистрация'
     }
     return render(request, 'catalog/contacts.html', context)
-
-
-def password(request):
-    if request.method == 'GET':
-        password_pr = request.GET.get('password')
-        print(f'Пароль: {password_pr}')
-    context = {
-        'title': 'O.S.Ky: Пароль'
-    }
-    return render(request, 'catalog/password.html', context)
 
 
 class CategoryListView(ListView):
@@ -145,7 +132,7 @@ class ProductCreateView(CreateView):
     form_class = ProductForm
 
     def get_success_url(self):
-        return reverse_lazy('catalog:product_card', args=[self.object.category.pk])
+        return reverse('catalog:product_card', args=[self.kwargs.get('pk')])
 
 
 class ProductUpdateView(UpdateView):
@@ -153,7 +140,7 @@ class ProductUpdateView(UpdateView):
     form_class = ProductForm
 
     def get_success_url(self):
-        return reverse_lazy('catalog:product_card', args=[self.object.category.pk])
+        return reverse('catalog:product_card', args=[self.kwargs.get('pk')])
 
 
 class ProductDeleteView(DeleteView):
@@ -161,4 +148,4 @@ class ProductDeleteView(DeleteView):
     form_class = ProductForm
 
     def get_success_url(self):
-        return reverse_lazy('catalog:product_card', args=[self.object.category.pk])
+        return reverse('catalog:product_card', args=[self.kwargs.get('pk')])
