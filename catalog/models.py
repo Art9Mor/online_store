@@ -40,7 +40,7 @@ class Product(models.Model):
     last_date = models.DateTimeField(verbose_name='Дата изменения', **NULLABLE)
     is_active = models.BooleanField(default=True, verbose_name='В наличии')
     can_be_ordered = models.BooleanField(default=True, verbose_name='Можно заказать')
-
+    is_published = models.BooleanField(default=False, verbose_name='опубликован')
 
     def __str__(self):
         return f'{self.name} | {self.category} | {self.cost} руб.'

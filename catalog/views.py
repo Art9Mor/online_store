@@ -1,14 +1,16 @@
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.forms import inlineformset_factory
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 
-from catalog.forms import ProductForm
+from catalog.forms import ProductForm, VersionForm
 from catalog.models import Product, Category, Review, Version
 from django.urls import reverse_lazy, reverse
 from pytils.translit import slugify
 
 
-class IndexView(TemplateView):
+class IndexView(LoginRequiredMixin, TemplateView):
     template_name = 'catalog/index.html'
     extra_context = {
         'title': 'Главная',
@@ -37,6 +39,7 @@ class ProductListView(LoginRequiredMixin, ListView):
         return context
 
 
+@login_required
 def contacts(request):
     context = {
         'title': 'O.S.Ky: Вход/Регистрация'
@@ -44,7 +47,7 @@ def contacts(request):
     return render(request, 'catalog/contacts.html', context)
 
 
-class CategoryListView(ListView):
+class CategoryListView(LoginRequiredMixin, ListView):
     model = Category
     template_name = 'catalog/categories.html'
     extra_context = {
@@ -52,6 +55,7 @@ class CategoryListView(ListView):
     }
 
 
+@login_required
 def product_card(request, pk):
     category_item = Category.objects.get(pk=pk)
     context = {
@@ -62,12 +66,12 @@ def product_card(request, pk):
     return render(request, 'catalog/product_card.html', context)
 
 
-class ProductDetailView(DetailView):
+class ProductDetailView(LoginRequiredMixin, DetailView):
     model = Product
     template_name = 'catalog/product_detail.html'
 
 
-class ReviewListView(ListView):
+class ReviewListView(LoginRequiredMixin, ListView):
     model = Review
     template_name = 'catalog/review_list.html'
     extra_context = {
@@ -80,7 +84,7 @@ class ReviewListView(ListView):
         return queryset
 
 
-class ReviewCreateView(CreateView):
+class ReviewCreateView(LoginRequiredMixin, CreateView):
     model = Review
     fields = ('title', 'text', 'photo', 'is_published')
     success_url = reverse_lazy('catalog:reviews')
@@ -96,7 +100,7 @@ class ReviewCreateView(CreateView):
         return super().form_valid(form)
 
 
-class ReviewUpdateView(UpdateView):
+class ReviewUpdateView(LoginRequiredMixin, UpdateView):
     model = Review
     fields = ('title', 'slug', 'text', 'photo')
 
@@ -111,7 +115,7 @@ class ReviewUpdateView(UpdateView):
         return reverse('catalog:review_detail', args=[self.kwargs.get('pk')])
 
 
-class ReviewDetailView(DetailView):
+class ReviewDetailView(LoginRequiredMixin, DetailView):
     model = Review
     template_name = 'catalog/review_detail.html'
 
@@ -122,12 +126,12 @@ class ReviewDetailView(DetailView):
         return self.object
 
 
-class ReviewDeleteView(DeleteView):
+class ReviewDeleteView(LoginRequiredMixin, DeleteView):
     model = Review
     success_url = reverse_lazy('catalog:reviews')
 
 
-class ProductCreateView(CreateView):
+class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
     form_class = ProductForm
 
@@ -135,15 +139,32 @@ class ProductCreateView(CreateView):
         return reverse('catalog:product_card', args=[self.kwargs.get('pk')])
 
 
-class ProductUpdateView(UpdateView):
+class ProductUpdateView(LoginRequiredMixin, UpdateView):
     model = Product
     form_class = ProductForm
 
     def get_success_url(self):
         return reverse('catalog:product_card', args=[self.kwargs.get('pk')])
 
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        VersionFormset = inlineformset_factory(Product, Version, form=VersionForm, extra=1)
+        if self.request.method == 'POST':
+            context_data['formset'] = VersionFormset(self.request.POST, instance=self.object)
+        else:
+            context_data['formset'] = VersionFormset(instance=self.object)
+        return context_data
 
-class ProductDeleteView(DeleteView):
+    def form_valid(self, form):
+        formset = self.get_context_data()['formset']
+        self.object = form.save()
+        if formset.is_valid():
+            formset.instance = self.object
+            formset.save()
+        return super().form_valid(form)
+
+
+class ProductDeleteView(LoginRequiredMixin, DeleteView):
     model = Product
     form_class = ProductForm
 
