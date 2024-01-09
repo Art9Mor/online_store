@@ -1,5 +1,5 @@
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
 from django.forms import inlineformset_factory
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
@@ -39,7 +39,6 @@ class ProductListView(LoginRequiredMixin, ListView):
         return context
 
 
-@login_required
 def contacts(request):
     context = {
         'title': 'O.S.Ky: Вход/Регистрация'
@@ -71,7 +70,7 @@ class ProductDetailView(LoginRequiredMixin, DetailView):
     template_name = 'catalog/product_detail.html'
 
 
-class ReviewListView(LoginRequiredMixin, ListView):
+class ReviewListView(ListView):
     model = Review
     template_name = 'catalog/review_list.html'
     extra_context = {
@@ -84,8 +83,9 @@ class ReviewListView(LoginRequiredMixin, ListView):
         return queryset
 
 
-class ReviewCreateView(LoginRequiredMixin, CreateView):
+class ReviewCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Review
+    permission_required = 'catalog.add_review'
     fields = ('title', 'text', 'photo', 'is_published')
     success_url = reverse_lazy('catalog:reviews')
     extra_context = {
@@ -100,8 +100,9 @@ class ReviewCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class ReviewUpdateView(LoginRequiredMixin, UpdateView):
+class ReviewUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Review
+    permission_required = 'catalog.change_review'
     fields = ('title', 'slug', 'text', 'photo')
 
     def form_valid(self, form):
@@ -115,7 +116,7 @@ class ReviewUpdateView(LoginRequiredMixin, UpdateView):
         return reverse('catalog:review_detail', args=[self.kwargs.get('pk')])
 
 
-class ReviewDetailView(LoginRequiredMixin, DetailView):
+class ReviewDetailView(DetailView):
     model = Review
     template_name = 'catalog/review_detail.html'
 
@@ -126,21 +127,24 @@ class ReviewDetailView(LoginRequiredMixin, DetailView):
         return self.object
 
 
-class ReviewDeleteView(LoginRequiredMixin, DeleteView):
+class ReviewDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = Review
+    permission_required = 'catalog.delete_review'
     success_url = reverse_lazy('catalog:reviews')
 
 
-class ProductCreateView(LoginRequiredMixin, CreateView):
+class ProductCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Product
+    permission_required = 'catalog.add_product'
     form_class = ProductForm
 
     def get_success_url(self):
         return reverse('catalog:product_card', args=[self.kwargs.get('pk')])
 
 
-class ProductUpdateView(LoginRequiredMixin, UpdateView):
+class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Product
+    permission_required = 'catalog.change_product'
     form_class = ProductForm
 
     def get_success_url(self):
@@ -164,9 +168,12 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-class ProductDeleteView(LoginRequiredMixin, DeleteView):
+class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Product
     form_class = ProductForm
+
+    def test_func(self):
+        return self.request.user.is_superuser
 
     def get_success_url(self):
         return reverse('catalog:product_card', args=[self.kwargs.get('pk')])

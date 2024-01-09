@@ -20,8 +20,14 @@
                 <p>Цена: {{ object.cost }}руб.</p>
                 <p>Категория товара: {{ object.category }}</p>
                 <button type="button" class="btn btn-success">Купить</button>
-                <a type="button" class="btn btn-warning" href="{% url 'catalog:product_update' object.pk %}">Изменить</a>
-                <a type="button" class="btn btn-danger" href="{% url 'catalog:product_delete' object.pk %}">Удалить</a>
+                {% if perm.category.change_product %}
+                    <a type="button" class="btn btn-warning" 
+                       href="{% url 'catalog:product_update' object.pk %}">Изменить</a>
+                {% endif %}
+                {% if user.is_superuser %}
+                    <a type="button" class="btn btn-danger"
+                       href="{% url 'catalog:product_delete' object.pk %}">Удалить</a>
+                {% endif %}
             </div>
         </div>
     </div>

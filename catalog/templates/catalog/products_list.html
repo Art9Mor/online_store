@@ -5,12 +5,15 @@
         <div class="row py-lg-5">
             <div class="col-lg-6 col-md-8 mx-auto">
                 <p class="lead text-body-secondary">
-                    Здесь Вы можете посмотреть все товары, представленные в нашем интернет-магазине, 
+                    Здесь Вы можете посмотреть все товары, представленные в нашем интернет-магазине,
                     а так же перейти на страницу интересующего Вас товара и в категорию товара.
-                    <p>Так же Вы можете <a type="button" class="btn btn-success"
-                                           href="{% url 'catalog:product_create' %}">Предложить свой товар</a></p>
+                    {% if perm.catalog.add_product %}
+                        <p>Так же Вы можете
+                            <a type="button" class="btn btn-success"
+                               href="{% url 'catalog:product_create' %}">Предложить свой товар</a>
+                        </p>
+                    {% endif %}
                 </p>
-
             </div>
         </div>
     </section>

@@ -18,8 +18,13 @@
                 <p>Текст: {{ object.text }}</p>
                 <p>Дата публикации: {{ object.creation_date }}</p>
                 <a type="button" class="btn btn-primary" href="{% url 'catalog:reviews' %}">К отзывам</a>
-                <a type="button" class="btn btn-warning" href="{% url 'catalog:review_edit' object.pk %}">Редактировать</a>
-                <a type="button" class="btn btn-danger" href="{% url 'catalog:delete_review' object.pk %}">Удалить</a>
+                {% if perm.catalog.change_review %}
+                    <a type="button" class="btn btn-warning" href="{% url 'catalog:review_edit' object.pk %}">Редактировать</a>
+                {% endif %}
+                {% if perm.catalog.delete_review %}
+                    <a type="button" class="btn btn-danger"
+                       href="{% url 'catalog:delete_review' object.pk %}">Удалить</a>
+                {% endif %}
             </div>
         </div>
     </div>

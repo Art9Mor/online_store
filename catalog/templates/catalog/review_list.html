@@ -8,8 +8,10 @@
                 <p class="lead text-body-secondary">
                     Здесь Вы можете оставить/прочесть отзывы о сотрудничестве с нами или о нашем товаре.
                 </p>
-                <a type="button" class="btn btn-success"
-                   href="{% url 'catalog:create_review' %}">Написать отзыв</a>
+                {% if user.is_active %}
+                    <a type="button" class="btn btn-success"
+                       href="{% url 'catalog:create_review' %}">Написать отзыв</a>
+                {% endif %}
             </div>
         </div>
     </section>
@@ -23,13 +25,15 @@
                             <div class="card-body">
                                 <p class="card-text">{{ object|title }}({{ object.slug }})</p>
                                 <p class="card-text">{{ object.text|truncatechars:100 }}</p>
-                                <p class="card-text">{{ object.creation_date }}  Просмотры: {{ object.views_count }}</p>
+                                <p class="card-text">{{ object.creation_date }} Просмотры: {{ object.views_count }}</p>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="container">
                                         <a type="button" class="btn btn-sm btn-outline-secondary"
                                            href="{% url 'catalog:review_detail' object.pk %}">Читать отзыв</a>
-                                        <a type="button" class="btn btn-sm btn-outline-danger"
-                                           href="{% url 'catalog:delete_review' object.pk %}">Удалить</a>
+                                        {% if perm.catalog.delete_review %}
+                                            <a type="button" class="btn btn-sm btn-outline-danger"
+                                               href="{% url 'catalog:delete_review' object.pk %}">Удалить</a>
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>
