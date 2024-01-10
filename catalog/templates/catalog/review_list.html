@@ -30,7 +30,7 @@
                                     <div class="container">
                                         <a type="button" class="btn btn-sm btn-outline-secondary"
                                            href="{% url 'catalog:review_detail' object.pk %}">Читать отзыв</a>
-                                        {% if perm.catalog.delete_review %}
+                                        {% if perms.catalog.delete_review %}
                                             <a type="button" class="btn btn-sm btn-outline-danger"
                                                href="{% url 'catalog:delete_review' object.pk %}">Удалить</a>
                                         {% endif %}

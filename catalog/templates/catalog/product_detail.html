@@ -20,7 +20,7 @@
                 <p>Цена: {{ object.cost }}руб.</p>
                 <p>Категория товара: {{ object.category }}</p>
                 <button type="button" class="btn btn-success">Купить</button>
-                {% if perm.catalog.change_product %}
+                {% if perms.catalog.change_product %}
                     <a type="button" class="btn btn-warning"
                        href="{% url 'catalog:product_update' object.pk %}">Изменить</a>
                 {% endif %}
