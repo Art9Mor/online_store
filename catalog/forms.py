@@ -16,20 +16,20 @@ class ProductForm(StyleFormMixin, forms.ModelForm):
         model = Product
         exclude = ('user', 'is_active')
 
+    censored = ['казино',
+                'криптовалюта',
+                'крипта',
+                'биржа',
+                'дешево',
+                'бесплатно',
+                'обман',
+                'полиция',
+                'радар'
+                ]
+
     def clean_product_name(self):
         cleaned_data = self.cleaned_data.get('name')
-        censored = ['казино',
-                    'криптовалюта',
-                    'крипта',
-                    'биржа',
-                    'дешево',
-                    'бесплатно',
-                    'обман',
-                    'полиция',
-                    'радар'
-                    ]
-
-        for word in censored:
+        for word in self.censored:
             if word in cleaned_data:
                 raise forms.ValidationError('Недопустимое слово!')
 
@@ -37,18 +37,7 @@ class ProductForm(StyleFormMixin, forms.ModelForm):
 
     def clean_description(self):
         cleaned_data = self.cleaned_data.get('description')
-        censored = ['казино',
-                    'криптовалюта',
-                    'крипта',
-                    'биржа',
-                    'дешево',
-                    'бесплатно',
-                    'обман',
-                    'полиция',
-                    'радар'
-                    ]
-
-        for word in censored:
+        for word in self.censored:
             if word in cleaned_data:
                 raise forms.ValidationError(f'Недопустимое слово - {word}!')
 
