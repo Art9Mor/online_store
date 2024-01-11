@@ -1,5 +1,7 @@
+from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
+from django.core.cache import cache
 from django.forms import inlineformset_factory
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
@@ -8,6 +10,8 @@ from catalog.forms import ProductForm, VersionForm
 from catalog.models import Product, Category, Review, Version
 from django.urls import reverse_lazy, reverse
 from pytils.translit import slugify
+
+from catalog.services import get_cache_version_for_product, get_cache_for_categories
 
 
 class IndexView(LoginRequiredMixin, TemplateView):
@@ -49,9 +53,12 @@ def contacts(request):
 class CategoryListView(LoginRequiredMixin, ListView):
     model = Category
     template_name = 'catalog/categories.html'
-    extra_context = {
-        'title': 'Категории'
-    }
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super().get_context_data(*args, **kwargs)
+        context_data['object_list'] = get_cache_for_categories()
+        context_data['title'] = 'Категории'
+        return context_data
 
 
 @login_required
@@ -71,7 +78,7 @@ class ProductDetailView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        context_data['versions'] = self.object.version_set.all()
+        context_data['versions'] = get_cache_version_for_product(self.object.pk)
         return context_data
 
 

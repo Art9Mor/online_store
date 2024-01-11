@@ -12,6 +12,9 @@ class RegisterView(CreateView):
     template_name = 'users/register.html'
     success_url = reverse_lazy('users:login')
 
+    def form_valid(self, form):
+        ...
+
 
 class ProfileView(LoginRequiredMixin, UpdateView):
     model = User
