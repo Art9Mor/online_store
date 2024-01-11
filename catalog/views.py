@@ -69,6 +69,11 @@ class ProductDetailView(LoginRequiredMixin, DetailView):
     model = Product
     template_name = 'catalog/product_detail.html'
 
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['versions'] = self.object.version_set.all()
+        return context_data
+
 
 class ReviewListView(ListView):
     model = Review

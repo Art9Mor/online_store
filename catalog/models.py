@@ -38,9 +38,9 @@ class Product(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, verbose_name='user', **NULLABLE)
     first_date = models.DateTimeField(verbose_name='Дата создания', **NULLABLE)
     last_date = models.DateTimeField(verbose_name='Дата изменения', **NULLABLE)
-    is_active = models.BooleanField(default=True, verbose_name='В наличии')
-    can_be_ordered = models.BooleanField(default=True, verbose_name='Можно заказать')
-    is_published = models.BooleanField(default=False, verbose_name='опубликован')
+    is_active = models.BooleanField(default=True, verbose_name='В наличии', **NULLABLE)
+    can_be_ordered = models.BooleanField(default=True, verbose_name='Можно заказать', **NULLABLE)
+    is_published = models.BooleanField(default=False, verbose_name='опубликован', **NULLABLE)
 
     def __str__(self):
         return f'{self.name} | {self.category} | {self.cost} руб.'
@@ -72,7 +72,7 @@ class Version(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Продукт')
     number = models.IntegerField(verbose_name='Номер версии')
     name = models.CharField(max_length=100, verbose_name='Название версии')
-    sign = models.BooleanField(default=False, verbose_name='Текущая версия')
+    sign = models.BooleanField(default=False, verbose_name='Текущая версия', **NULLABLE)
 
     def __str__(self):
         return f'Продукт {self.product} версии {self.number}'

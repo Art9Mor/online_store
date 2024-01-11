@@ -14,11 +14,58 @@
                 <img src="{{ object.img|mymedia }}" class="w-100" alt="...">
             </div>
             <div class="col-md-6 p-4 ps-md-0">
-                <h5 class="mt-0">О товаре:</h5>
-                <p>id: {{ object.id }}</p>
-                <p>Описание: {{ object.description }}</p>
-                <p>Цена: {{ object.cost }}руб.</p>
-                <p>Категория товара: {{ object.category }}</p>
+                <table class="table">
+                    <tr>
+                        <td>Название</td>
+                        <td>{{ object.name }}</td>
+                    </tr>
+                    <tr>
+                        <td>id</td>
+                        <td>{{ object.id }}</td>
+                    </tr>
+                    <tr>
+                        <td>Цена</td>
+                        <td>{{ object.cost }}</td>
+                    </tr>
+                    <tr>
+                        <td>Категория</td>
+                        <td>{{ object.category }}</td>
+                    </tr>
+                    <tr>
+                        <td>Описание</td>
+                        <td>{{ object.description }}</td>
+                    </tr>
+                    <tr>
+                        <td>Версия</td>
+                        {% for version in versions %}
+                            <td>{{ version }}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td>Наличие</td>
+                        <td>
+                            {% if object.is_active is True %}
+                                В наличии
+                            {% else %}
+                                Нет в наличии
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% if object.is_active is False %}
+                        <tr>
+                            <td>Заказ</td>
+                            <td>
+                                {% if object.can_be_ordered is True %}
+                                    Можно заказать
+                                {% else %}
+                                    Заказ невозможен
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endif %}
+                </table>
+
+
                 <button type="button" class="btn btn-success">Купить</button>
                 {% if perms.catalog.change_product %}
                     <a type="button" class="btn btn-warning"
