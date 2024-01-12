@@ -75,6 +75,8 @@
                     <a type="button" class="btn btn-danger"
                        href="{% url 'catalog:product_delete' object.pk %}">Удалить</a>
                 {% endif %}
+                <a type="button" class="btn btn-primary"
+                   href="{% url 'catalog:products_list' %}">К писку товаров</a>
             </div>
         </div>
     </div>
