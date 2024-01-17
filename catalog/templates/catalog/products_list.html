@@ -7,12 +7,10 @@
                 <p class="lead text-body-secondary">
                     Здесь Вы можете посмотреть все товары, представленные в нашем интернет-магазине,
                     а так же перейти на страницу интересующего Вас товара и в категорию товара.
-                    {% if perms.catalog.add_product %}
                         <p>Так же Вы можете
-                            <a type="button" class="btn btn-success"
+                            <a type="button" class="btn btn-link"
                                href="{% url 'catalog:product_create' %}">Предложить свой товар</a>
                         </p>
-                    {% endif %}
                 </p>
             </div>
         </div>

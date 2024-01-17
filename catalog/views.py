@@ -1,12 +1,14 @@
 from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.models import Permission
 from django.core.cache import cache
 from django.forms import inlineformset_factory
+from django.http import Http404
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 
-from catalog.forms import ProductForm, VersionForm
+from catalog.forms import ProductForm, VersionForm, ModeratorProductForm
 from catalog.models import Product, Category, Review, Version
 from django.urls import reverse_lazy, reverse
 from pytils.translit import slugify
@@ -145,19 +147,34 @@ class ReviewDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     success_url = reverse_lazy('catalog:reviews')
 
 
-class ProductCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
-    permission_required = 'catalog.add_product'
     form_class = ProductForm
 
     def get_success_url(self):
         return reverse('catalog:product_card', args=[self.kwargs.get('pk')])
 
+    def form_valid(self, form):
+        self.object = form.save()
+        self.object.user = self.request.user
+        self.object.save()
+        return super().form_valid(form)
+
 
 class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Product
     permission_required = 'catalog.change_product'
-    form_class = ProductForm
+
+    def get_form_class(self):
+        if self.request.user.is_staff:
+            return ModeratorProductForm
+        else:
+            return ProductForm
+
+    def put(self, *args, **kwargs):
+        permission = Permission.objects.get(name='catalog.change_product')
+
+        self.request.user.user_permissions.add(permission)
 
     def get_success_url(self):
         return reverse('catalog:product_card', args=[self.kwargs.get('pk')])
@@ -178,6 +195,12 @@ class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView)
             formset.instance = self.object
             formset.save()
         return super().form_valid(form)
+
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        if self.object.user != self.request.user and not self.request.user.is_staff:
+            raise Http404("Вы не являетесь владельцем этого товара")
+        return self.object
 
 
 class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):

@@ -148,3 +148,9 @@ if CACHE_ENABLED:
             "LOCATION": os.getenv('CACHE_LOCATION')
         }
     }
+
+EMAIL_HOST = 'smtp.yandex.com'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = 'fuckup@oscarbot.ru'
+EMAIL_HOST_PASSWORD = ''
+EMAIL_USE_SSL = True

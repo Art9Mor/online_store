@@ -14,7 +14,7 @@ class StyleFormMixin:
 class ProductForm(StyleFormMixin, forms.ModelForm):
     class Meta:
         model = Product
-        exclude = ('user', 'is_active')
+        exclude = ('user', 'is_active', 'is_published')
 
     censored = ['казино',
                 'криптовалюта',
@@ -53,4 +53,4 @@ class VersionForm(StyleFormMixin, forms.ModelForm):
 class ModeratorProductForm(StyleFormMixin, forms.ModelForm):
     class Meta:
         model = Product
-        fields = ('description', 'category', 'is_active')
+        fields = ('description', 'category', 'is_published')

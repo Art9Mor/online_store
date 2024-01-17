@@ -3,7 +3,7 @@
     <ul class="list-unstyled">
         <li><a href="{% url 'catalog:categories' %}" class="text-white">Категории</a></li>
         <li><a href="{% url 'catalog:products_list' %}" class="text-white">Товары</a></li>
-        <li><a href="#" class="text-white">Личный кабинет</a></li>
+        <li><a href="{% url 'users:profile' %}" class="text-white">Профиль</a></li>
         <li><a href="{% url 'catalog:index' %}" class="text-white">На главную</a></li>
     </ul>
 </div>
