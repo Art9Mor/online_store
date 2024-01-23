@@ -1,0 +1,44 @@
+[
+  {
+    "model": "users.user",
+    "pk": 3,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$6kIDSjOFAPpj0y4ICQKnrv$KHt237ncXn52lCN13hccpf3oMQ1V9XMuN2yohmTkH7c=",
+      "last_login": "2024-01-17T12:09:31.609Z",
+      "is_superuser": false,
+      "first_name": "Дурак",
+      "last_name": "Деревенский",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2024-01-10T05:46:42Z",
+      "email": "test_moder@os.ky",
+      "avatar": "users/Moder_4tAXhda.jpg",
+      "phone": null,
+      "country": "ДеревняДураков",
+      "groups": [
+        1
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "users.user",
+    "pk": 4,
+    "fields": {
+      "password": "666",
+      "last_login": "2024-01-17T13:58:29.602Z",
+      "is_superuser": true,
+      "first_name": "admin",
+      "last_name": "admin",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2024-01-10T07:05:37.689Z",
+      "email": "admin@os.ky",
+      "avatar": "",
+      "phone": null,
+      "country": null,
+      "groups": [],
+      "user_permissions": []
+    }
+  }
+]
