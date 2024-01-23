@@ -82,7 +82,7 @@ class Version(models.Model):
         verbose_name_plural = 'Версии'
 
 
-@receiver(post_save, sender=Version)
-def set_current_version(sender, instance, **kwargs):
-    if instance.current_version:
-        Version.objects.filter(product=instance.product).exclude(pk=instance.pk).update(current_version=False)
+# @receiver(post_save, sender=Version)
+# def set_current_version(sender, instance, **kwargs):
+#     if instance.current_version:
+#         Version.objects.filter(product=instance.product).exclude(pk=instance.pk).update(current_version=False)

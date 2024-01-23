@@ -30,13 +30,14 @@ class IndexView(LoginRequiredMixin, TemplateView):
 
 class ProductListView(LoginRequiredMixin, ListView):
     model = Product
+    login_url = 'users:login'
     template_name = 'catalog/products_list.html'
 
-    def get_queryset(self):
-        queryset = super().get_queryset().all()
-        if not self.request.user.is_staff:
-            return queryset.filter(user=self.request.user, is_published=True)
-        return queryset
+    # def get_queryset(self):
+    #     queryset = super().get_queryset().all()
+    #     if not self.request.user.is_staff:
+    #         return queryset.filter(user=self.request.user, is_published=True)
+    #     return queryset
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
@@ -150,9 +151,11 @@ class ReviewDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
 class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
     form_class = ProductForm
+    template_name = 'catalog/product_form.html'
 
     def get_success_url(self):
-        return reverse('catalog:product_card', args=[self.kwargs.get('pk')])
+        # return reverse('catalog:product_card', args=[self.kwargs.get('pk')])
+        return reverse('catalog:products_list')
 
     def form_valid(self, form):
         self.object = form.save()
@@ -163,21 +166,17 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
 
 class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Product
+    login_url = 'users:login'
     permission_required = 'catalog.change_product'
 
     def get_form_class(self):
-        if self.request.user.is_staff:
-            return ModeratorProductForm
-        else:
+        if self.request.user.is_superuser:
             return ProductForm
-
-    def put(self, *args, **kwargs):
-        permission = Permission.objects.get(name='catalog.change_product')
-
-        self.request.user.user_permissions.add(permission)
+        return ModeratorProductForm
 
     def get_success_url(self):
-        return reverse('catalog:product_card', args=[self.kwargs.get('pk')])
+        # return reverse('catalog:product_card', args=[self.kwargs.get('pk')])
+        return reverse('catalog:products_list')
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -205,10 +204,8 @@ class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView)
 
 class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Product
-    form_class = ProductForm
+    login_url = 'users:login'
+    success_url = reverse_lazy('catalog:products_list')
 
     def test_func(self):
         return self.request.user.is_superuser
-
-    def get_success_url(self):
-        return reverse('catalog:product_card', args=[self.kwargs.get('pk')])

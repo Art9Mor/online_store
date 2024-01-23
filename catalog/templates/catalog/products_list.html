@@ -26,7 +26,7 @@
                             <img src="{{ object.img|mymedia }}" class="card-img-top" alt="...">
                             <div class="card-body">
                                 <p class="card-text">
-                                    {% if object.is_active %}
+                                    {% if object.is_published %}
                                         {{ object|title }}
                                     {% else %}
                                         <span class="text-muted">{{ object|title }}</span>

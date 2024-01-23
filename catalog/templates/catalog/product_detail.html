@@ -36,9 +36,17 @@
                         <td>{{ object.description }}</td>
                     </tr>
                     <tr>
+                        <td>Влыделец</td>
+                        <td>{{ object.user|default:'OS.KY' }}</td>
+                    </tr>
+                    <tr>
                         <td>Версия</td>
                         {% for version in versions %}
-                            <td>{{ version }}</td>
+                            {% if version %}
+                                <td>{{ version }}</td>
+                            {% else %}
+                                <td>Без версии</td>
+                            {% endif %}
                         {% endfor %}
                     </tr>
                     <tr>
@@ -57,8 +65,6 @@
                             <td>
                                 {% if object.can_be_ordered is True %}
                                     Можно заказать
-                                {% else %}
-                                    Заказ невозможен
                                 {% endif %}
                             </td>
                         </tr>
@@ -67,13 +73,15 @@
 
 
                 <button type="button" class="btn btn-success">Купить</button>
-                {% if perms.catalog.change_product %}
-                    <a type="button" class="btn btn-warning"
-                       href="{% url 'catalog:product_update' object.pk %}">Изменить</a>
-                {% endif %}
-                {% if user.is_superuser %}
-                    <a type="button" class="btn btn-danger"
-                       href="{% url 'catalog:product_delete' object.pk %}">Удалить</a>
+                {% if object.user == request.user or user.is_superuser or user.is_staff %}
+                    {% if perms.catalog.change_product %}
+                        <a type="button" class="btn btn-warning"
+                           href="{% url 'catalog:product_update' object.pk %}">Изменить</a>
+                    {% endif %}
+                    {% if user.is_superuser %}
+                        <a type="button" class="btn btn-danger"
+                           href="{% url 'catalog:product_delete' object.pk %}">Удалить</a>
+                    {% endif %}
                 {% endif %}
                 <a type="button" class="btn btn-primary"
                    href="{% url 'catalog:products_list' %}">К писку товаров</a>
